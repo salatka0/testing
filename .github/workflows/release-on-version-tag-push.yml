@@ -1,0 +1,14 @@
+name: Release on push to a version tag
+on:
+  push:
+    tags:
+      - v[0-9]*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-gnu]
+    name: Build for ${{ matrix.target }}
+    steps:
+      - run: echo "${{ matrix.target }}"
