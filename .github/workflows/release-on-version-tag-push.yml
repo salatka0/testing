@@ -7,6 +7,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
+    strategy:
+      matrix:
+        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-gnu]
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
@@ -18,12 +21,19 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target x86_64-pc-windows-gnu --out-dir release-dir -Z unstable-options
-      - uses: actions-rs/cargo@v1
+          args: --release --target ${{ matrix.target }} --out-dir release-dir -Z unstable-options
+      - uses: actions/upload-artifact@v3
         with:
-          use-cross: true
-          command: build
-          args: --release --target x86_64-unknown-linux-gnu --out-dir release-dir -Z unstable-options
+          name: release
+          path: release-dir/*
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: release
+          path: release-dir/
       - uses: softprops/action-gh-release@v1
         with:
           files: release-dir/*
