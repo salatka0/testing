@@ -24,4 +24,6 @@ jobs:
           use-cross: true
           command: build
           args: --release --target x86_64-unknown-linux-gnu --out-dir release-dir -Z unstable-options
-      - run: ls ./release-dir
+      - uses: softprops/action-gh-release@v1
+        with:
+          release-dir/*
