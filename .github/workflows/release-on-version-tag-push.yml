@@ -1,4 +1,4 @@
-name: Release on push to a version tag
+name: Release on version tag push
 on:
   push:
     tags:
@@ -11,4 +11,10 @@ jobs:
         target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-gnu]
     name: Build for ${{ matrix.target }}
     steps:
-      - run: echo "${{ matrix.target }}"
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
