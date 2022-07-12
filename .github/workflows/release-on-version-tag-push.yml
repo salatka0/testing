@@ -22,4 +22,5 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --target ${{ matrix.target }}
+          args: --release --target ${{ matrix.target }} --out-dir release-dir -Z unstable-options
+      - run: ls ./release-dir
