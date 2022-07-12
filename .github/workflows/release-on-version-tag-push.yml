@@ -6,16 +6,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build
+    strategy:
+      matrix:
+        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-gnu]
+    name: Build for ${{ matrix.target }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          target: x86_64-pc-windows-gnu
+          target: ${{ matrix.target }}
           override: true
           profile: minimal
-      - name: Build for windows
-        run: cargo build --release --target x86_64-pc-windows-gnu --out-dir release -Z unstable-options
-      - name: Build for linux
-        run: cargo build --release --target x86_64-pc-windows-gnu --out-dir release -Z unstable-options
+      - uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
